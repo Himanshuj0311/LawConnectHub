@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Authentication</title>
+    <link rel="stylesheet" href="../css/signup.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"
+      integrity="sha256-2Dbg51yxfa7qZ8CSKqsNxHtph8UHdgbzxXF9ANtyJHo="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css"
+      integrity="sha256-7jUS+MWeqkFdmW9ozkZ7mPagz+QmMbsBlt+Q3MsE+FU="
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div id="loader-overlay">
+      <div id="loader"></div>
+    </div>
+    <div class="container">
+      <div class="header">
+        <h2 id="account">Create Account</h2>
+      </div>
+      <div class="google-section"></div>
+      <div class="form-section">
+        <form>
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Username" required />
+          <br />
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Email Address" required />
+          <br />
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <br />
+          <label for="confirm">Confirm Password</label>
+          <input
+            type="password"
+            id="confirm"
+            placeholder="Confirm Password"
+            required
+          />
+        </form>
+        <br />
+        <button id="last">
+          <h3 id="h3">Sign Up</h3>
+        </button>
+        <div style="text-align: center">
+          <br />
+          <a
+            class="google-sign-in"
+            href="http://localhost:4500/user/auth/google"
+            ><span class="buttonText">Sign in with Google</span></a
+          >
+          <br />
+          <br />
+          <a href="./login.html">Already have an account?</a>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const loaderOverlay = document.getElementById("loader-overlay");
+    const container = document.getElementById("container");
+    let email = document.getElementById("email");
+    let password = document.getElementById("password");
+    let confirm = document.getElementById("confirm");
+    let username = document.getElementById("username");
+    let last = document.getElementById("last");
+    let account = document.getElementById("account");
+    let google = document.querySelector(".google-sign-in");
+    google.addEventListener("click", () => {
+      loaderOverlay.style.display = "flex";
+      container.style.opacity = "0.8";
+    });
+    account.addEventListener("click", () => {
+      window.location.href = "./index.html";
+    });
+
+    last.addEventListener("click", () => {
+      console.log("clc");
+      if (password.value != confirm.value) {
+        Swal.fire({
+          title: "Error!",
+          text: "Both Password Are Not Same",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
+      } else if (
+        username.value == "" &&
+        password.value == "" &&
+        email.value == ""
+      ) {
+        Swal.fire({
+          title: "Error!",
+          text: "Fill All The Required Fields",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
+      } else {
+        let data = {
+          name: username.value,
+          email: email.value,
+          password: password.value,
+          role: "client",
+        };
+
+        fetch("http://localhost:4500/user/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            console.log(res);
+            if (res === "exists") {
+              Swal.fire({
+                title: "Error!",
+                text: "Email Already Exists",
+                icon: "error",
+                confirmButtonText: "Ok",
+              });
+            } else if (res == "Invalid Email") {
+              Swal.fire({
+                title: "Error!",
+                text: "Invalid Email",
+                icon: "error",
+                confirmButtonText: "Ok",
+              });
+            } else {
+              Swal.fire("Good job!", "Email Confirmation Sent!", "success");
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: "Error!",
+              text: "Fetching Error",
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+            console.log(error);
+          })
+          .finally(() => {
+            loaderOverlay.style.display = "none";
+            container.style.opacity = "1";
+          });
+
+        loaderOverlay.style.display = "flex";
+        container.style.opacity = "0.8";
+      }
+    });
+  </script>
+</html>
