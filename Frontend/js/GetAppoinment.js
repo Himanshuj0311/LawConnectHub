@@ -2,7 +2,7 @@
 let main = document.querySelector('#main');
 let ID =(localStorage.getItem("userId"));
 //console.log(ID)
-let url = "https://lawconnecthub.onrender.com/apponiment/client";
+let url = "http://localhost:4500/apponiment/client";
 
 
 function fetchData() {

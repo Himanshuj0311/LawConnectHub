@@ -3,7 +3,7 @@
 // let cartData = JSON.parse(localStorage.getItem("cart-data")) || [];
 let paginationWrapper = document.querySelector(".pagination-wrapper");
 
-let url = "https://lawconnecthub.onrender.com/getLawyer";
+let url = "http://localhost:4500/getLawyer";
 
 function fetchdata(queryParamString = null) {
     fetch(`${url}${queryParamString ? queryParamString : ""}`)
